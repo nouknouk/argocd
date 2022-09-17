@@ -1,0 +1,86 @@
+---
+# helm chart
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  namespace: minecraft
+  name: minecraft-hardcore
+spec:
+  chart: minecraft
+  repo: https://itzg.github.io/minecraft-server-charts
+  targetNamespace: minecraft
+  valuesContent: |-
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+    securityContext:
+      # Security context settings
+      runAsUser: 0
+      privileged: true
+      # runAsUser: 1000
+      # fsGroup: 1000
+
+    minecraftServer:
+      eula: "TRUE"
+      maxPlayers: 5
+      pvp: true
+      maxWorldSize: 29999984
+      maxBuildHeight: 256
+      maxTickTime: 60000
+      spawnProtection: 0
+      servicePort: 25565
+      levelSeed:
+      memory: 1024M
+      # One of: LATEST, SNAPSHOT, or a specific version (ie: "1.7.9").
+      version: "LATEST"
+      # This can be one of "VANILLA", "FORGE", "SPIGOT", "BUKKIT", "PAPER", "FTBA", "SPONGEVANILLA", "CURSEFORGE"
+      type: "PAPER"
+      # One of: creative, survival, adventure, spectator
+      gameMode: survival
+      # One of: peaceful, easy, normal, and hard
+      difficulty: normal
+      # If set to true, players will be set to spectator mode if they die.
+      hardcore: true
+      # A comma-separated list of player names who should be admins.
+      ops: nouknouk57,tetan57,lucky102013
+      # Max view distance (in chunks).
+      viewDistance: 12
+      # Define this if you want a specific map generation seed.
+      # Message of the Day
+      motd: "Minecraft hardcore server"
+      worldSaveName: "world"
+
+      serviceType: NodePort
+      serviceAnnotations: {}
+
+      # A list of Spigot resources/plugins IDs to download.
+      spigetResources: [27448,19254]
+
+      rcon:
+        # If you enable this, make SURE to change your password below.
+        enabled: true
+
+    persistence:
+#      storageClass: "nfs"
+#      dataDir:
+#        enabled: true
+#        Size: 5Gi
+
+    serviceAnnotations: {
+      coredns.io/hostname: "hardcore.nouknouk.net"
+    }
+
+    mcbackup:
+      enabled: false
+#      initialDelay: 30m
+#      backupInterval: 7d
+#      pauseIfNoPlayers: "true"
+#      pruneBackupsDays: 7
+#      destDir: /backups
+#      linkLatest: "true"
+#      persistence:
+#        storageClass: "nfs"
+#        backupDir:
+#          enabled: true
+#          Size: 20Gi
